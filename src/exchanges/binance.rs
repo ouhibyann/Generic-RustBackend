@@ -3,6 +3,7 @@ use tokio_tungstenite::{connect_async, tungstenite::protocol::Message};
 use futures_util::{StreamExt, SinkExt};
 use url::Url;
 use http::uri::Uri;
+use serde_json::Value;
 
 pub struct BinanceWebSocket;
 
@@ -20,7 +21,22 @@ impl WebSocketHandler for BinanceWebSocket {
             while let Some(message) = read.next().await {
                 match message {
                     Ok(Message::Text(text)) => {
-                        println!("Received: {}", text);
+                        // Parse the incoming JSON message from Binance
+                        if let Ok(json) = serde_json::from_str::<Value>(&text) {
+                            // Extract bids and asks arrays from the JSON message
+                            // See: https://developers.binance.com/docs/binance-spot-api-docs/web-socket-streams
+                            if let (Some(asks), Some(bids)) = (json["a"].as_array(), json["b"].as_array()) {
+                                if let (Some(best_ask), Some(best_bid)) = (asks.first(), bids.first()) {
+                                    if let (Some(ask_price), Some(bid_price)) = (best_ask[0].as_str(), best_bid[0].as_str()) {
+                                        let ask_price: f64 = ask_price.parse().unwrap_or(0.0);
+                                        let bid_price: f64 = bid_price.parse().unwrap_or(0.0);
+
+                                        let mid_price = (ask_price + bid_price) / 2.0;
+                                        println!("Highest Bid: {}, Lowest Ask: {}, Mid Price: {}", bid_price, ask_price, mid_price);
+                                    }
+                                }
+                            }
+                        }
                     }
                     Ok(Message::Ping(ping)) => {
                         // Respond to WebSocket ping messages with a pong to maintain connection
