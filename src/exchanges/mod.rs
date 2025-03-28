@@ -1,1 +1,2 @@
-pub mod binance;
+pub mod binance_ws;
+mod kraken_rest_api;

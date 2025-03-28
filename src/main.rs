@@ -1,8 +1,9 @@
 mod websocket;
 mod exchanges;
+mod rest;
 
 use tokio;
-use exchanges::binance::BinanceWebSocket;
+use exchanges::binance_ws::BinanceWebSocket;
 use websocket::websocket_handler::WebSocketHandler;
 
 #[tokio::main]
