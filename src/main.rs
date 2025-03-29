@@ -3,10 +3,10 @@ mod config;
 mod exchanges {
     pub mod orderbook_provider;
     pub mod kraken_rest_api;
-    // pub mod binance_ws; // Other modules can be added here.
+    pub mod binance_ws;
 }
 mod rest;
-
+mod websocket;
 use actix_web::{App, HttpServer};
 use config::load_config;
 use exchanges::kraken_rest_api::KrakenProvider;
@@ -62,8 +62,17 @@ async fn run_rest(provider: Arc<dyn OrderBookProvider + Send + Sync>) -> std::io
 
 /// Run the Binance WebSocket integration.
 async fn run_ws() -> std::io::Result<()> {
-    println!("Starting WebSocket mode...");
-    // For now, we simply keep the process alive.
+    println!("Starting Binance WebSocket connection...");
+    // Ensure you bring the BinanceWebSocket and its trait into scope:
+    use exchanges::binance_ws::BinanceWebSocket;
+    use websocket::websocket_handler::WebSocketHandler;
+
+    // Spawn the Binance WebSocket task.
+    tokio::spawn(async {
+        let _ = BinanceWebSocket::start().await;
+    });
+
+    // Keep the process alive to continue receiving data.
     loop {
         tokio::time::sleep(std::time::Duration::from_secs(3600)).await;
     }
