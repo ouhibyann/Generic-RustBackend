@@ -14,10 +14,10 @@ pub struct KrakenConfig {
     pub endpoint: String,
 }
 
-/// Loads configuration from a file (e.g., Settings.toml) and environment variables.
+/// Loads configuration from a file (e.g., config.toml) and environment variables.
 pub fn load_config() -> Result<AppConfig, ConfigError> {
     let config = Config::builder()
-        .add_source(File::with_name("Settings").required(false))
+        .add_source(File::with_name("config").required(false))
         .add_source(Environment::with_prefix("APP").separator("_"))
         .build()?;
     config.try_deserialize()
