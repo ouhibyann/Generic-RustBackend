@@ -1,3 +1,4 @@
+// src/exchanges/huobi_rest_api.rs
 use serde::Deserialize;
 use reqwest;
 use async_trait::async_trait;
@@ -9,16 +10,12 @@ use crate::exchanges::orderbook_provider::{OrderBookData, OrderBookProvider};
 pub struct HuobiTick {
     pub bids: Vec<(f64, f64)>,
     pub asks: Vec<(f64, f64)>,
-    pub ts: u64,
-    pub version: u64,
 }
 
 /// Huobi’s response structure.
 #[derive(Debug, Deserialize)]
 pub struct HuobiResponse {
     pub status: String,
-    pub ch: String,
-    pub ts: u64,
     pub tick: HuobiTick,
 }
 
