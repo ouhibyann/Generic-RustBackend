@@ -1,3 +1,7 @@
 [kraken]
 trading_pair = "XBTUSD"
 endpoint = "https://api.kraken.com/0/public/Depth"
+
+[huobi]
+trading_pair = "btcusdt"
+endpoint = "https://api.huobi.pro/market/depth"
