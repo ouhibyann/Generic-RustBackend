@@ -1,6 +1,6 @@
-# FlowDesk Backend
+# Generic RustBackend
 
-FlowDesk is a Rust-based backend service that aggregates order book data for the BTC/USDT trading pair from multiple
+This project is a Rust-based backend service that aggregates order book data for the BTC/USDT trading pair from multiple
 exchanges.
 It currently integrates with Kraken and Huobi using REST APIs and Binance via WebSocket.
 
